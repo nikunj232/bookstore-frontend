@@ -1,0 +1,28 @@
+table{
+  thead, tbody{
+    tr {
+      th, td{
+        padding: 8px 15px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: start;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+.action-button{
+  background-color: white;
+  border-radius: 100%;
+  width: 51px;
+  height: 51px;
+  padding: 5px;
+  box-shadow: 1px 1px 10px #00000010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg{
+    width: 20px;
+    height: 20px;
+  }
+}
