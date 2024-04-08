@@ -10,8 +10,9 @@ import { Book } from '../models/book.model';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { Observer, Subject } from 'rxjs';
+import { Observer, Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-edit-book',
@@ -35,12 +36,14 @@ export class EditBookComponent {
   bookForm: FormGroup;
   existingBookData!: Book
   bookId!: String | null; // Declare a variable to store the ID
+  unsubscribeSignal: Subject<void> = new Subject();
 
 
   constructor(private fb: FormBuilder,
     public bookService: BookService,
     private route: ActivatedRoute,
     private router: Router,
+    public snackbarService: SnackbarService
 
   ) {
     this.bookForm = this.fb.group({
@@ -55,7 +58,11 @@ export class EditBookComponent {
   ngOnInit(): void {
     this.bookId = this.route.snapshot.paramMap.get('id'); // Convert string to number
 
-    this.bookService.getBookByIsbn(this.bookId ?? "").subscribe(data => {
+    this.bookService.getBookByIsbn(this.bookId ?? "")
+    .pipe(
+      takeUntil(this.unsubscribeSignal),
+    )
+    .subscribe(data => {
       const resData = JSON.parse(JSON.stringify(data)).data
       this.existingBookData = resData
 
@@ -90,6 +97,7 @@ export class EditBookComponent {
         this.bookService.updateBookByIsbn(this.bookForm.value.isbn, this.bookForm.value).subscribe(data => {
           console.log(data);
           this.bookForm.reset()
+          this.snackbarService.openSnackBar(JSON.parse(JSON.stringify(data)).message)
           this.router.navigate([''])
           this.bookService.endLoading()
         },
@@ -100,4 +108,10 @@ export class EditBookComponent {
       }, 1000);
     }
   }
+
+  ngOnDestroy(): void {
+    this.unsubscribeSignal.next();
+    this.unsubscribeSignal.unsubscribe();
+  }
+
 }

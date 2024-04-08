@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Book } from '../../models/book.model';
 import { Subject, catchError, of, throwError } from 'rxjs';
@@ -12,8 +12,15 @@ export class BookService {
 
   constructor(private http: HttpClient) { }
 
-  getBookData() {
-    return this.http.get(`${this.api_url}books/all-book`).pipe(catchError(() => of(null)))
+  // getBookData(data: {search:string, limit: number, page: number}) {
+  getBookData(data: any) {
+    let params = new HttpParams();
+    Object.keys(data).forEach((key:string) => {
+      params = params.append(key, data[key]);
+    })
+    return this.http.get(`${this.api_url}books/all-book`, {
+      params:data
+    } ).pipe(catchError(() => of(null)))
   }
 
   getBookByIsbn(isbn:String) {
@@ -38,7 +45,7 @@ export class BookService {
   }
 
   // delete book by isbn number
-  deleteBookByIsbn(isbn:string) {
+  deleteBookByIsbn(isbn:String) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.delete(`${this.api_url}books/delete/${isbn}`, {headers}).pipe(
       catchError(this.handleError)

@@ -10,7 +10,9 @@ import { Book } from '../models/book.model';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { Observer, Subject } from 'rxjs';
+import { Observer, Subject, Subscription, takeUntil } from 'rxjs';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-create-book',
   standalone: true,
@@ -31,9 +33,12 @@ import { Observer, Subject } from 'rxjs';
 })
 export class CreateBookComponent {
   bookForm: FormGroup;
+  unsubscribeSignal: Subject<void> = new Subject();
 
   constructor(private fb: FormBuilder,
-    public bookService: BookService
+    public router: Router,
+    public bookService: BookService,
+    public snackbarService: SnackbarService
   ) {
     this.bookForm = this.fb.group({
       title: ['', Validators.required],
@@ -62,10 +67,15 @@ export class CreateBookComponent {
       this.bookService.startLoading()
       setTimeout(() => {
 
-        this.bookService.createBook(this.bookForm.value).subscribe(data => {
+        this.bookService.createBook(this.bookForm.value)
+        .pipe(
+          takeUntil(this.unsubscribeSignal),
+        ).subscribe((data) => {
           console.log(data);
           this.bookForm.reset()
           this.bookService.endLoading()
+          this.snackbarService.openSnackBar(JSON.parse(JSON.stringify(data)).message)
+          this.router.navigate([''])
         },
         error => {
           this.bookService.endLoading()
@@ -73,5 +83,10 @@ export class CreateBookComponent {
         })
       }, 1000);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeSignal.next();
+    this.unsubscribeSignal.unsubscribe();
   }
 }

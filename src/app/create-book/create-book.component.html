@@ -42,7 +42,7 @@
     </ng-container>
   </div>
   <div class="mb-4">
-    <label class="block text-sm mb-2" for="publicationYear">Publication Year</label>
+    <label class="block text-sm mb-2" for="publicationYear">Publication Year *</label>
     <input class="w-1/2 test-base" type="number" class="form-control" id="publicationYear" formControlName="publicationYear" placeholder="Please enter publication year" required>
     <ng-container *ngIf="!!getBookFormField('isbn')?.errors && (getBookFormField('isbn')?.dirty || bookForm.get('isbn')?.touched)">
       <div class="input-error mt-1 text-red-600 !text-xs" >
@@ -51,7 +51,7 @@
     </ng-container>
   </div>
   <div class="mb-4">
-    <label class="block text-sm mb-2" for="isbn">Isbn Number</label>
+    <label class="block text-sm mb-2" for="isbn">Isbn Number *</label>
     <input class="w-1/2 test-base" type="text" class="form-control" id="isbn" formControlName="isbn" placeholder="Please enter isbn number" required>
     <ng-container *ngIf="!!getBookFormField('isbn')?.errors && (getBookFormField('isbn')?.dirty || bookForm.get('isbn')?.touched)">
       <div class="input-error mt-1 text-red-600 !text-xs" >
@@ -60,7 +60,7 @@
     </ng-container>
   </div>
   <div class="mb-4">
-    <label class="block text-sm mb-2" for="description">Decription</label>
+    <label class="block text-sm mb-2" for="description">Decription *</label>
     <textarea name="description"  class="form-control" id="description" formControlName="description" placeholder="Please enter author" cols="30" rows="10"></textarea>
     <ng-container *ngIf="!!getBookFormField('description')?.errors && (getBookFormField('description')?.dirty || bookForm.get('description')?.touched)">
       <div class="input-error mt-1 text-red-600 !text-xs" >
