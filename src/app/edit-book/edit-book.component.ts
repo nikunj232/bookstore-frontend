@@ -47,11 +47,11 @@ export class EditBookComponent {
 
   ) {
     this.bookForm = this.fb.group({
-      title: ['', Validators.required],
-      author: ['', Validators.required],
-      description: ['', Validators.required],
-      publicationYear: ['', Validators.required],
-      isbn: ['', Validators.required]
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      author: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
+      description: [''],
+      publicationYear: ['', [Validators.required, Validators.min(1000), Validators.max(9999)]],
+      isbn: ['', [Validators.required, Validators.pattern(/^[0-9]{13}$/)]]
     });
   }
 
@@ -93,7 +93,6 @@ export class EditBookComponent {
       console.log(this.bookForm.getError('title'));
       this.bookService.startLoading()
       setTimeout(() => {
-
         this.bookService.updateBookByIsbn(this.bookForm.value.isbn, this.bookForm.value).subscribe(data => {
           console.log(data);
           this.bookForm.reset()
@@ -103,9 +102,9 @@ export class EditBookComponent {
         },
         error => {
           this.bookService.endLoading()
-          console.log(error)
+          this.snackbarService.openSnackBar(error?.message ?? "Something went wrong...!")
         })
-      }, 1000);
+      }, 800);
     }
   }
 

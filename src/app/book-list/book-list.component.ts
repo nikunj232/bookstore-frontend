@@ -153,6 +153,7 @@ export class BookListComponent {
           this.fetchBookData(this.searchText)
         }, error => {
           this.isDeleteApiLoading.next(false)
+          this.snackbarService.openSnackBar(error?.message ?? "Something went wrong...!")
         })
       }
     });

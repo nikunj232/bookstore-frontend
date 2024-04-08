@@ -41,17 +41,12 @@ export class CreateBookComponent {
     public snackbarService: SnackbarService
   ) {
     this.bookForm = this.fb.group({
-      title: ['', Validators.required],
-      author: ['', Validators.required],
-      description: ['', Validators.required],
-      publicationYear: ['', Validators.required],
-      isbn: ['', Validators.required]
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      author: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
+      description: [''],
+      publicationYear: ['', [Validators.required, Validators.min(1000), Validators.max(9999)]],
+      isbn: ['', [Validators.required, Validators.pattern(/^[0-9]{13}$/)]]
     });
-  }
-  ngOnChanges(): void {
-    console.log(this.bookForm.errors)
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
   }
 
   getBookFormField(key: string) {
@@ -59,6 +54,8 @@ export class CreateBookComponent {
   }
 
   onSubmit(){
+    console.log(this.bookForm.get('isbn')?.errors);
+
     if (this.bookForm.invalid) {
       this.bookForm.markAllAsTouched()
     }else {
@@ -79,6 +76,7 @@ export class CreateBookComponent {
         },
         error => {
           this.bookService.endLoading()
+          this.snackbarService.openSnackBar(error?.message ?? "Something went wrong...!")
           console.log(error)
         })
       }, 1000);

@@ -26,27 +26,35 @@
     <label class="block text-sm mb-2" for="title">Title *</label>
     <input class="w-1/2 test-base" type="text" class="form-control" id="title" formControlName="title" placeholder="Please enter title" required>
     <ng-container *ngIf="!!getBookFormField('title')?.errors && (getBookFormField('title')?.dirty || bookForm.get('title')?.touched)">
-      <div class="input-error mt-1 text-red-600 !text-xs">
+      <div *ngIf="getBookFormField('title')?.hasError('required')" class="input-error mt-1 text-red-600 !text-xs">
         Title is required.
       </div>
+      <div *ngIf="getBookFormField('title')?.hasError('minLength')" class="input-error mt-1 text-red-600 !text-xs">
+        Title length should be minimum 2 character.
+      </div>
     </ng-container>
-
   </div>
   <div class="mb-4">
     <label class="block text-sm mb-2" for="author">Author *</label>
     <input class="w-1/2 test-base" type="text" class="form-control" id="author" formControlName="author" placeholder="Please enter author" required>
     <ng-container *ngIf="!!getBookFormField('author')?.errors && (getBookFormField('author')?.dirty || bookForm.get('author')?.touched)">
-      <div class="input-error mt-1 text-red-600 !text-xs" >
+      <div  *ngIf="getBookFormField('author')?.hasError('required')" class="input-error mt-1 text-red-600 !text-xs" >
         Author is required.
+      </div>
+      <div *ngIf="getBookFormField('author')?.hasError('minLength')" class="input-error mt-1 text-red-600 !text-xs">
+        Author length should be minimum 2 character.
       </div>
     </ng-container>
   </div>
   <div class="mb-4">
     <label class="block text-sm mb-2" for="publicationYear">Publication Year *</label>
     <input class="w-1/2 test-base" type="number" class="form-control" id="publicationYear" formControlName="publicationYear" placeholder="Please enter publication year" required>
-    <ng-container *ngIf="!!getBookFormField('isbn')?.errors && (getBookFormField('isbn')?.dirty || bookForm.get('isbn')?.touched)">
-      <div class="input-error mt-1 text-red-600 !text-xs" >
+    <ng-container *ngIf="!!getBookFormField('publicationYear')?.errors && (getBookFormField('publicationYear')?.dirty || bookForm.get('publicationYear')?.touched)">
+      <div  *ngIf="getBookFormField('publicationYear')?.hasError('required')" class="input-error mt-1 text-red-600 !text-xs" >
         Publication year is required.
+      </div>
+      <div *ngIf="getBookFormField('publicationYear')?.hasError('minLength')" class="input-error mt-1 text-red-600 !text-xs">
+        Publication year is invalid.
       </div>
     </ng-container>
   </div>
@@ -54,19 +62,17 @@
     <label class="block text-sm mb-2" for="isbn">Isbn Number *</label>
     <input class="w-1/2 test-base" type="text" class="form-control" id="isbn" formControlName="isbn" placeholder="Please enter isbn number" required>
     <ng-container *ngIf="!!getBookFormField('isbn')?.errors && (getBookFormField('isbn')?.dirty || bookForm.get('isbn')?.touched)">
-      <div class="input-error mt-1 text-red-600 !text-xs" >
+      <div  *ngIf="getBookFormField('isbn')?.hasError('required')" class="input-error mt-1 text-red-600 !text-xs" >
         Isbn number is required.
+      </div>
+      <div *ngIf="getBookFormField('isbn')?.hasError('pattern')" class="input-error mt-1 text-red-600 !text-xs">
+        Isbn number is invalid.
       </div>
     </ng-container>
   </div>
   <div class="mb-4">
     <label class="block text-sm mb-2" for="description">Decription *</label>
     <textarea name="description"  class="form-control" id="description" formControlName="description" placeholder="Please enter author" cols="30" rows="10"></textarea>
-    <ng-container *ngIf="!!getBookFormField('description')?.errors && (getBookFormField('description')?.dirty || bookForm.get('description')?.touched)">
-      <div class="input-error mt-1 text-red-600 !text-xs" >
-        Description is required.
-      </div>
-    </ng-container>
   </div>
   <div>
     <button mat-raised-button color="primary" type="submit" class="btn btn-primary" [disabled]="bookService.isApiLoading | async">Submit
